@@ -32,7 +32,7 @@ services:
     environment:
       - GF_PATHS_CONFIG=/etc/grafana/custom.ini
     ports:
-      - "3000:3000"
+      - "80:3000"
     networks:
       - NechepurenkoDB-my-netology-hw
     restart: always
