@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: NechepurenkoDB-netology-prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - NechepurenkoDB-my-netology-hw
+    restart: always
+
+  pushgateway:
+    image: prom/pushgateway:latest
+    container_name: NechepurenkoDB-netology-pushgateway
+    ports:
+      - "9091:9091"
+    networks:
+      - NechepurenkoDB-my-netology-hw
+    restart: always
+    depends_on:
+      - prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: NechepurenkoDB-netology-grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/custom.ini:/etc/grafana/custom.ini
+    environment:
+      - GF_PATHS_CONFIG=/etc/grafana/custom.ini
+    ports:
+      - "3000:3000"
+    networks:
+      - NechepurenkoDB-my-netology-hw
+    restart: always
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  NechepurenkoDB-my-netology-hw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
